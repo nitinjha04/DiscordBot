@@ -12,7 +12,7 @@ const port = 3000;
 const urlModel = require("./models/url");
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/discord-bot")
+  .connect(process.env.MONGODB)
   .then(() => console.log("mongo connected"))
   .catch((err) => console.error(err));
 
