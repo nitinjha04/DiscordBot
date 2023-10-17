@@ -47,7 +47,7 @@ client.on("messageCreate", async (message) => {
     urlModel.findOne({ redirectURL: url }).then((existingUrl) => {
       if (existingUrl) {
         message.reply({
-          content: `The URL '${url}' already has a shortId: ${existingUrl.shortId} click here to redirect http://localhost:3000/${existingUrl.shortId}`,
+          content: `The URL '${url}' already has a shortId: ${existingUrl.shortId} click here to redirect https://discord-bot-eight-beta.vercel.app/${existingUrl.shortId}`,
         });
       } else {
         message.reply({
@@ -58,7 +58,7 @@ client.on("messageCreate", async (message) => {
           .create({ shortId: generateShortId, redirectURL: url })
           .then(() => {
             message.reply({
-              content: `Your shortId for url ${url} is created your id is ${generateShortId} , click here http://localhost:3000/${generateShortId}`,
+              content: `Your shortId for url ${url} is created your id is ${generateShortId} , click here https://discord-bot-eight-beta.vercel.app/${generateShortId}`,
             });
           })
           .catch((error) => {
