@@ -12,38 +12,9 @@ const port = 3000;
 const urlModel = require("./models/url");
 
 mongoose
-  .connect(process.env.MONGODB, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.MONGODB)
   .then(() => console.log("mongo connected"))
   .catch((err) => console.error(err));
-
-// const { MongoClient, ServerApiVersion } = require("mongodb");
-// const uri = process.env.MONGODB;
-// // Create a MongoClient with a MongoClientOptions object to set the Stable API version
-// const databaseClient = new MongoClient(uri, {
-//   serverApi: {
-//     version: ServerApiVersion.v1,
-//     strict: true,
-//     deprecationErrors: true,
-//   },
-// });
-// async function run() {
-//   try {
-//     // Connect the client to the server	(optional starting in v4.7)
-//     await databaseClient.connect();
-//     // Send a ping to confirm a successful connection
-//     await databaseClient.db("admin").command({ ping: 1 });
-//     console.log(
-//       "Pinged your deployment. You successfully connected to MongoDB!"
-//     );
-//   } finally {
-//     // Ensures that the client will close when you finish/error
-//     await databaseClient.close();
-//   }
-// }
-// run().catch(console.dir);
 
 const client = new Client({
   intents: [
@@ -73,43 +44,41 @@ client.on("messageCreate", async (message) => {
     const url = message.content.split("create")[1].trim();
     const generateShortId = shortid();
 
-    const existingURL = await urlModel
-      .findOne({ redirectURL: url })
-      .maxTimeMS(20000)
-      .exec();
-    if (existingURL) {
-      message.reply({
-        content: `The URL '${url}' already has a shortId: ${existingURL.shortId} click here to redirect https://discord-bot-eight-beta.vercel.app/${existingURL.shortId}`,
-      });
-    } else {
-      message.reply({
-        content: "Generating Short url id for " + url,
-      });
-
-      try {
-        // Proceed to create a new short URL
-        const newURL = await urlModel.create({
-          shortId: generateShortId,
-          redirectURL: url,
-        });
+    urlModel.findOne({ redirectURL: url }).then((existingUrl) => {
+      if (existingUrl) {
         message.reply({
-          content: `Your shortId for url ${url} is created, your id is ${generateShortId}, click here https://discord-bot-eight-beta.vercel.app/${generateShortId}`,
+          content: `The URL '${url}' already has a shortId: ${existingUrl.shortId} click here to redirect http://localhost:3000/${existingUrl.shortId}`,
         });
-      } catch (error) {
-        if (error.code === 11000) {
-          // Handle the duplicate key error
-          message.reply({
-            content: "The provided URL already has a short URL.",
+      } else {
+        message.reply({
+          content: "Generating Short url id for " + url,
+        });
+
+        return urlModel
+          .create({ shortId: generateShortId, redirectURL: url })
+          .then(() => {
+            message.reply({
+              content: `Your shortId for url ${url} is created your id is ${generateShortId} , click here http://localhost:3000/${generateShortId}`,
+            });
+          })
+          .catch((error) => {
+            if (error.code === 11000) {
+              // This code represents a duplicate key error (duplicate 'redirectURL')
+              // Handle the duplicate key error, e.g., provide a user-friendly message
+              message.reply({
+                content: "The provided URL already has a short URL.",
+              });
+              return;
+            } else {
+              console.error(error);
+              message.reply({
+                content:
+                  "An error occurred while generating the short URL. Please try again later.",
+              });
+            }
           });
-        } else {
-          console.error(error);
-          message.reply({
-            content:
-              "An error occurred while generating the short URL. Please try again later.",
-          });
-        }
       }
-    }
+    });
 
     // Proceed to create a new short URL
   }
