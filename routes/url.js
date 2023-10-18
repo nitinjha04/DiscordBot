@@ -3,7 +3,10 @@ const express = require("express");
 
 const router = express.Router();
 
-router.get("/favicon.ico", (req, res) => res.send('/favicon'));
+app.get("/favicon.ico", (req, res) => {
+    // Return a 404 status code to indicate the favicon doesn't exist
+    res.status(404).end();
+  });
 
 router.get("/", (req, res) => {
   res.send("hi");
