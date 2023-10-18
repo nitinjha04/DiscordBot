@@ -10,7 +10,6 @@ const app = express();
 // const port = 3000;
 
 const urlModel = require("./models/url");
-
 mongoose
   .connect(process.env.MONGODB)
   .then(() => console.log("mongo connected"))
