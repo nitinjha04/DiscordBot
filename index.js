@@ -44,41 +44,44 @@ client.on("messageCreate", async (message) => {
     const url = message.content.split("create")[1].trim();
     const generateShortId = shortid();
 
-    urlModel.findOne({ redirectURL: url }).then((existingUrl) => {
-      if (existingUrl) {
-        message.reply({
-          content: `The URL '${url}' already has a shortId: ${existingUrl.shortId} click here to redirect https://discord-lpswdfy10-nitinjha04.vercel.app/${existingUrl.shortId}`,
-        });
-      } else {
-        message.reply({
-          content: "Generating Short url id for " + url,
-        });
-
-        return urlModel
-          .create({ shortId: generateShortId, redirectURL: url })
-          .then(() => {
-            message.reply({
-              content: `Your shortId for url ${url} is created your id is ${generateShortId} , click here https://discord-lpswdfy10-nitinjha04.vercel.app/${generateShortId}`,
-            });
-          })
-          .catch((error) => {
-            if (error.code === 11000) {
-              // This code represents a duplicate key error (duplicate 'redirectURL')
-              // Handle the duplicate key error, e.g., provide a user-friendly message
-              message.reply({
-                content: "The provided URL already has a short URL.",
-              });
-              return;
-            } else {
-              console.error(error);
-              message.reply({
-                content:
-                  "An error occurred while generating the short URL. Please try again later.",
-              });
-            }
+    urlModel
+      .findOne({ redirectURL: url })
+      .exec()
+      .then((existingUrl) => {
+        if (existingUrl) {
+          message.reply({
+            content: `The URL '${url}' already has a shortId: ${existingUrl.shortId} click here to redirect https://discord-lpswdfy10-nitinjha04.vercel.app/${existingUrl.shortId}`,
           });
-      }
-    });
+        } else {
+          message.reply({
+            content: "Generating Short url id for " + url,
+          });
+
+          return urlModel
+            .create({ shortId: generateShortId, redirectURL: url })
+            .then(() => {
+              message.reply({
+                content: `Your shortId for url ${url} is created your id is ${generateShortId} , click here https://discord-lpswdfy10-nitinjha04.vercel.app/${generateShortId}`,
+              });
+            })
+            .catch((error) => {
+              if (error.code === 11000) {
+                // This code represents a duplicate key error (duplicate 'redirectURL')
+                // Handle the duplicate key error, e.g., provide a user-friendly message
+                message.reply({
+                  content: "The provided URL already has a short URL.",
+                });
+                return;
+              } else {
+                console.error(error);
+                message.reply({
+                  content:
+                    "An error occurred while generating the short URL. Please try again later.",
+                });
+              }
+            });
+        }
+      });
 
     // Proceed to create a new short URL
   }
@@ -93,7 +96,6 @@ client.on("interactionCreate", (interaction) => {
 client.login(process.env.LOGIN_TOKEN);
 
 app.use(express.urlencoded({ extended: false }));
-
 
 app.use(urlRoute);
 
