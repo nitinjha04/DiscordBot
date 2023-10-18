@@ -35,6 +35,8 @@ client.on("messageCreate", async (message) => {
     return;
   }
 
+  
+
   if (message.content.startsWith("Hi")) {
     return message.reply({
       content: "Hi From Bot",
@@ -83,6 +85,11 @@ client.on("messageCreate", async (message) => {
       });
 
     // Proceed to create a new short URL
+  }
+  if(!message.startsWith("H")|| !message.startsWith("c")){
+    return message.reply({
+      content: "I don't know how to respond to that. For now i can only respond to Hi or create {your desired URL you want to create} ",
+    })
   }
   console.log("Finished processing message.");
   // console.log(message);
