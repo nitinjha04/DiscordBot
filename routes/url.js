@@ -3,7 +3,7 @@ const express = require("express");
 
 const router = express.Router();
 
-router.get("/favicon.ico", (req, res) => res.status(204));
+router.get("/favicon.ico", (req, res) => res.send('/favicon'));
 
 router.get("/", (req, res) => {
   res.send("hi");
