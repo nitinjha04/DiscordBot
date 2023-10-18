@@ -47,7 +47,7 @@ client.on("messageCreate", async (message) => {
     urlModel.findOne({ redirectURL: url }).then((existingUrl) => {
       if (existingUrl) {
         message.reply({
-          content: `The URL '${url}' already has a shortId: ${existingUrl.shortId} click here to redirect http://localhost:3000/${existingUrl.shortId}`,
+          content: `The URL '${url}' already has a shortId: ${existingUrl.shortId} click here to redirect https://discord-lpswdfy10-nitinjha04.vercel.app/${existingUrl.shortId}`,
         });
       } else {
         message.reply({
@@ -58,7 +58,7 @@ client.on("messageCreate", async (message) => {
           .create({ shortId: generateShortId, redirectURL: url })
           .then(() => {
             message.reply({
-              content: `Your shortId for url ${url} is created your id is ${generateShortId} , click here http://localhost:3000/${generateShortId}`,
+              content: `Your shortId for url ${url} is created your id is ${generateShortId} , click here https://discord-lpswdfy10-nitinjha04.vercel.app/${generateShortId}`,
             });
           })
           .catch((error) => {
@@ -93,6 +93,7 @@ client.on("interactionCreate", (interaction) => {
 client.login(process.env.LOGIN_TOKEN);
 
 app.use(express.urlencoded({ extended: false }));
+
 
 app.use(urlRoute);
 
