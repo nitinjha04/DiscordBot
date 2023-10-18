@@ -7,7 +7,7 @@ const urlRoute = require("./routes/url");
 require("dotenv").config();
 
 const app = express();
-const port = 3000;
+// const port = 3000;
 
 const urlModel = require("./models/url");
 
@@ -99,4 +99,5 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(urlRoute);
 
-app.listen(port, () => console.log(`server started ${port}`));
+// app.listen(port, () => console.log(`server started ${port}`));
+app.listen(() => console.log(`server started`));
