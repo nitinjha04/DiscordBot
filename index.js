@@ -88,7 +88,7 @@ client.on("messageCreate", async (message) => {
   }
   else{
     return message.reply({
-      content: "I don't know how to respond to that. For now i can only respond to Hi or create {your desired URL you want to create} ",
+      content: "I don't know how to respond to that. For now i can only respond to either 'Hi' or 'create {your desired URL you want to create}' ",
     })
   }
   console.log("Finished processing message.");
